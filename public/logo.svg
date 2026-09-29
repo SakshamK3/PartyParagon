@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" fill="none">
+  <!-- Background circle -->
+  <circle cx="200" cy="200" r="190" fill="url(#grad1)" opacity="0.1"/>
+  <circle cx="200" cy="200" r="185" stroke="url(#grad1)" stroke-width="2" opacity="0.3"/>
+  
+  <!-- Party hat / crown shape -->
+  <g transform="translate(120, 60)">
+    <!-- Main hat triangle -->
+    <path d="M80 0 L140 180 L20 180 Z" fill="url(#grad1)" opacity="0.9"/>
+    <!-- Hat stripes -->
+    <path d="M80 0 L60 120 L100 120 Z" fill="white" opacity="0.15"/>
+    <path d="M68 60 L52 150 L84 150 Z" fill="white" opacity="0.1"/>
+    <!-- Hat brim -->
+    <ellipse cx="80" cy="180" rx="75" ry="15" fill="url(#grad1)"/>
+    <!-- Star on top -->
+    <path d="M80 -10 L84 2 L96 2 L86 9 L90 22 L80 14 L70 22 L74 9 L64 2 L76 2 Z" fill="#FFD700"/>
+    <!-- Confetti dots -->
+    <circle cx="30" cy="50" r="5" fill="#FFD700" opacity="0.8"/>
+    <circle cx="135" cy="70" r="4" fill="#60A5FA" opacity="0.8"/>
+    <circle cx="15" cy="100" r="6" fill="#F472B6" opacity="0.8"/>
+    <circle cx="150" cy="120" r="5" fill="#34D399" opacity="0.8"/>
+    <circle cx="5" cy="150" r="4" fill="#FBBF24" opacity="0.8"/>
+    <circle cx="160" cy="40" r="3" fill="#A78BFA" opacity="0.8"/>
+    <!-- Streamers -->
+    <path d="M80 -5 Q60 -20 40 -5 Q20 10 5 -5" stroke="#FFD700" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <path d="M80 -5 Q100 -25 125 -10 Q145 5 160 -10" stroke="#F472B6" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  </g>
+  
+  <!-- Text: PARTY -->
+  <text x="200" y="290" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="48" fill="url(#grad1)" letter-spacing="8">PARTY</text>
+  
+  <!-- Text: PARAGON -->
+  <text x="200" y="340" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="38" fill="#374151" letter-spacing="6">PARAGON</text>
+  
+  <!-- Tagline -->
+  <text x="200" y="370" text-anchor="middle" font-family="Arial, sans-serif" font-weight="400" font-size="12" fill="#9CA3AF" letter-spacing="4">WHOLESALE PARTY SUPPLIES</text>
+  
+  <!-- Gradient definitions -->
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ec4899"/>
+      <stop offset="100%" style="stop-color:#f97316"/>
+    </linearGradient>
+  </defs>
+</svg>
