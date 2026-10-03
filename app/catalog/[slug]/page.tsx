@@ -49,9 +49,9 @@ export default async function CategoryPage({ params }: { params: { slug: string 
 
           return (
             <Link key={product.id} href={`/catalog/${params.slug}/${product.id}`} className="group bg-white rounded-2xl border border-gray-200 overflow-hidden card-hover">
-              <div className="h-40 bg-gradient-to-br from-primary-50 to-accent-50 flex items-center justify-center relative overflow-hidden">
+              <div className="h-48 bg-gradient-to-br from-primary-50 to-accent-50 flex items-center justify-center relative overflow-hidden p-3">
                 {imageUrl ? (
-                  <img src={imageUrl} alt={product.name} className="w-full h-full object-cover" />
+                  <img src={imageUrl} alt={product.name} className="max-w-full max-h-full object-contain" />
                 ) : (
                   <span className="text-4xl text-gray-300">📷</span>
                 )}
