@@ -93,28 +93,35 @@ export default async function ProductPage({ params }: { params: { slug: string; 
           {/* Pricing Table */}
           <div className="bg-gray-50 rounded-2xl p-6 mb-8">
             <h3 className="font-bold text-lg mb-4">Wholesale Pricing</h3>
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-gray-200">
-                  <th className="text-left py-3 px-2 font-semibold text-gray-600">Quantity (MOQ)</th>
-                  <th className="text-right py-3 px-2 font-semibold text-gray-600">Price per {product.pricing[0]?.unit || "unit"}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {product.pricing.map((tier, i) => (
-                  <tr key={i} className="border-b border-gray-100 last:border-0">
-                    <td className="py-3 px-2">
-                      <span className="font-medium">{tier.moq.toLocaleString()}+</span>{" "}
-                      <span className="text-gray-500">{tier.unit}</span>
-                    </td>
-                    <td className="py-3 px-2 text-right">
-                      <span className="text-lg font-bold text-primary-600">{formatPrice(tier.price)}</span>
-                      <span className="text-gray-500 text-xs block">per {tier.unit === "set of 3" ? "set" : tier.unit.replace(/s$/, "")}</span>
-                    </td>
+            {product.pricing.length === 1 && typeof product.pricing[0]?.price === "string" ? (
+              <div className="text-center py-4">
+                <span className="text-2xl font-bold text-primary-600">{product.pricing[0].price}</span>
+                <p className="text-gray-500 text-sm mt-1">Contact us for B2B wholesale pricing</p>
+              </div>
+            ) : (
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-gray-200">
+                    <th className="text-left py-3 px-2 font-semibold text-gray-600">Quantity (MOQ)</th>
+                    <th className="text-right py-3 px-2 font-semibold text-gray-600">Price per {product.pricing[0]?.unit || "unit"}</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {product.pricing.map((tier, i) => (
+                    <tr key={i} className="border-b border-gray-100 last:border-0">
+                      <td className="py-3 px-2">
+                        <span className="font-medium">{typeof tier.moq === "number" ? tier.moq.toLocaleString() + "+" : tier.moq}</span>{" "}
+                        <span className="text-gray-500">{tier.unit}</span>
+                      </td>
+                      <td className="py-3 px-2 text-right">
+                        <span className="text-lg font-bold text-primary-600">{typeof tier.price === "number" ? formatPrice(tier.price) : tier.price}</span>
+                        {tier.unit && <span className="text-gray-500 text-xs block">per {tier.unit === "set of 3" ? "set" : tier.unit.replace(/s$/, "")}</span>}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
 
           <div className="flex flex-wrap gap-4">
@@ -145,7 +152,7 @@ export default async function ProductPage({ params }: { params: { slug: string; 
                     {rpImage ? <img src={rpImage} alt={rp.name} className="max-w-full max-h-full object-contain" /> : <svg className="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>}
                   </div>
                   <h3 className="font-semibold text-sm line-clamp-2 mb-1">{rp.name}</h3>
-                  <p className="text-primary-600 font-bold text-sm">{formatPrice(Math.min(...rp.pricing.map((p) => p.price)))}+</p>
+                  <p className="text-primary-600 font-bold text-sm">{typeof rp.pricing[0]?.price === "string" ? rp.pricing[0].price : formatPrice(Math.min(...rp.pricing.map((p) => p.price as number)))}{ typeof rp.pricing[0]?.price === "number" ? "+" : ""}</p>
                 </Link>
               );
             })}

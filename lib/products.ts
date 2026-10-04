@@ -2,8 +2,8 @@ import { supabase } from "./supabase";
 import productsData from "@/data/products.json";
 
 export interface PriceTier {
-  price: number;
-  moq: number;
+  price: number | string;
+  moq: number | string;
   unit: string;
 }
 
@@ -160,14 +160,16 @@ export async function getSiteSettings(): Promise<SiteSettings> {
   return settings;
 }
 
-export function formatPrice(price: number): string {
+export function formatPrice(price: number | string): string {
+  if (typeof price === "string") return price;
   return `₹${price.toLocaleString("en-IN")}`;
 }
 
 export function getPriceRange(product: Product): string {
-  const prices = product.pricing.map((p) => p.price);
-  const min = Math.min(...prices);
-  const max = Math.max(...prices);
+  const numericPrices = product.pricing.map((p) => p.price).filter((p): p is number => typeof p === "number");
+  if (numericPrices.length === 0) return String(product.pricing[0]?.price || "On Demand");
+  const min = Math.min(...numericPrices);
+  const max = Math.max(...numericPrices);
   if (min === max) return formatPrice(min);
   return `${formatPrice(min)} – ${formatPrice(max)}`;
 }

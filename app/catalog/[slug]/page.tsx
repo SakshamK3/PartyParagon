@@ -43,8 +43,8 @@ export default async function CategoryPage({ params }: { params: { slug: string 
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {products.map((product) => {
-          const lowestPrice = Math.min(...product.pricing.map((p) => p.price));
-          const lowestMOQ = Math.min(...product.pricing.map((p) => p.moq));
+          const lowestPrice = product.pricing.every((p) => typeof p.price === "number") ? Math.min(...product.pricing.map((p) => p.price as number)) : null;
+          const lowestMOQ = product.pricing.every((p) => typeof p.moq === "number") ? Math.min(...product.pricing.map((p) => p.moq as number)) : null;
           const imageUrl = getProductImageUrl(product);
 
           return (
@@ -64,8 +64,8 @@ export default async function CategoryPage({ params }: { params: { slug: string 
                 {product.sku && <p className="text-xs text-gray-400 mb-2">SKU: {product.sku}</p>}
                 <div className="flex items-end justify-between mt-3">
                   <div>
-                    <p className="text-lg font-bold text-primary-600">{getPriceRange(product)}</p>
-                    <p className="text-xs text-gray-500">MOQ: {lowestMOQ} {product.pricing[0]?.unit || "pcs"}</p>
+                    <p className="text-lg font-bold text-primary-600">{lowestPrice !== null ? getPriceRange(product) : String(product.pricing[0]?.price || "On Demand")}</p>
+                    {lowestMOQ !== null && <p className="text-xs text-gray-500">MOQ: {lowestMOQ} {product.pricing[0]?.unit || "pcs"}</p>}
                   </div>
                   {product.brand && <span className="text-[10px] text-gray-400">{product.brand}</span>}
                 </div>
