@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { getAllCategories, getCategoryProductCount, getProductCount } from "@/lib/products";
+import { getAllCategories, getAllCategoriesAsync, getCategoryProductCount, getProductCount } from "@/lib/products";
 
 export const metadata: Metadata = {
   title: "Product Catalog | Party Paragon",
@@ -12,7 +12,7 @@ export const revalidate = 3;
 const CATEGORY_IMAGE_BASE = "https://mmxbfloqzooisubyvvtb.supabase.co/storage/v1/object/public/product-images/categories";
 
 export default async function CatalogPage() {
-  const categories = getAllCategories();
+  const categories = await getAllCategoriesAsync();
   const totalProducts = await getProductCount();
 
   const catCounts: Record<string, number> = {};

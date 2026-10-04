@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getAllCategories, getProductCount, getCategoryProductCount, getSiteSettings } from "@/lib/products";
+import { getAllCategoriesAsync, getProductCount, getCategoryProductCount, getSiteSettings } from "@/lib/products";
 
 const CATEGORY_IMAGE_BASE = "https://mmxbfloqzooisubyvvtb.supabase.co/storage/v1/object/public/product-images/categories";
 
@@ -13,7 +13,7 @@ const stats = [
 export const revalidate = 3;
 
 export default async function HomePage() {
-  const categories = getAllCategories();
+  const categories = await getAllCategoriesAsync();
   const totalProducts = await getProductCount();
   const settings = await getSiteSettings();
   const regularCategories = categories.filter((c) => !c.premium);

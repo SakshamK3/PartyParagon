@@ -1,8 +1,8 @@
-import { getAllCategories, getAllProducts } from "@/lib/products";
+import { getAllCategoriesAsync, getAllProducts } from "@/lib/products";
 
 export async function GET() {
   const baseUrl = "https://party-paragon.vercel.app";
-  const categories = getAllCategories();
+  const categories = await getAllCategoriesAsync();
   const products = await getAllProducts();
 
   const staticPages = ["", "/catalog", "/about", "/contact"];

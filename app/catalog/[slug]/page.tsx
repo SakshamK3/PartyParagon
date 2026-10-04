@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getAllCategories, getCategory, getProductsByCategory, getSiteSettings, formatPrice, getPriceRange, getProductImageUrl } from "@/lib/products";
+import { getAllCategories, getCategoryAsync, getProductsByCategory, getSiteSettings, formatPrice, getPriceRange, getProductImageUrl } from "@/lib/products";
 
 export const revalidate = 3;
 
@@ -9,14 +9,14 @@ export function generateStaticParams() {
   return getAllCategories().map((cat) => ({ slug: cat.slug }));
 }
 
-export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
-  const cat = getCategory(params.slug);
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const cat = await getCategoryAsync(params.slug);
   if (!cat) return { title: "Category Not Found" };
   return { title: `${cat.name} | Party Paragon Wholesale`, description: cat.description };
 }
 
 export default async function CategoryPage({ params }: { params: { slug: string } }) {
-  const category = getCategory(params.slug);
+  const category = await getCategoryAsync(params.slug);
   if (!category) notFound();
 
   const products = await getProductsByCategory(category.id);

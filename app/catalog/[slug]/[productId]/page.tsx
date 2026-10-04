@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getAllProducts, getAllCategories, getProduct, getCategory, getProductsByCategory, getSiteSettings, formatPrice, getProductImageUrl } from "@/lib/products";
+import { getAllProducts, getAllCategories, getProduct, getCategoryAsync, getProductsByCategory, getSiteSettings, formatPrice, getProductImageUrl } from "@/lib/products";
 
 export const revalidate = 3;
 
@@ -24,7 +24,7 @@ export default async function ProductPage({ params }: { params: { slug: string; 
   const product = await getProduct(params.productId);
   if (!product) notFound();
 
-  const category = getCategory(params.slug);
+  const category = await getCategoryAsync(params.slug);
   const settings = await getSiteSettings();
   const relatedProducts = (await getProductsByCategory(product.category)).filter((p) => p.id !== product.id).slice(0, 4);
   const imageUrl = getProductImageUrl(product);
