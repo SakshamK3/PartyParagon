@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description: "Get in touch with Party Paragon for wholesale party supply orders, custom quotes, and business inquiries.",
 };
 
-export const revalidate = 60;
+export const revalidate = 3;
 
 export default async function ContactPage() {
   const settings = await getSiteSettings();

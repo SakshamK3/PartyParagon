@@ -44,7 +44,7 @@ const staticCategories = productsData.categories as Category[];
 
 let cachedCategories: Category[] | null = null;
 let categoriesFetchedAt = 0;
-const CACHE_TTL = 60_000; // 1 minute
+const CACHE_TTL = 3_000; // 3 seconds
 
 async function fetchCategoriesFromStorage(): Promise<Category[]> {
   try {

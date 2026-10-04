@@ -15,3 +15,4 @@ out/
 
 # data (local only)
 data/inquiries.json
+.vercel

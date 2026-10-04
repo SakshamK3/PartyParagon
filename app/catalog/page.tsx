@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description: "Browse our complete wholesale party supply catalog. 200+ products across 16 categories.",
 };
 
-export const revalidate = 60;
+export const revalidate = 3;
 
 const CATEGORY_IMAGE_BASE = "https://mmxbfloqzooisubyvvtb.supabase.co/storage/v1/object/public/product-images/categories";
 

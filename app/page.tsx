@@ -10,7 +10,7 @@ const stats = [
   { label: "Happy Clients", value: "500+" },
 ];
 
-export const revalidate = 60;
+export const revalidate = 3;
 
 export default async function HomePage() {
   const categories = getAllCategories();

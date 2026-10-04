@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getAllProducts, getAllCategories, getProduct, getCategory, getProductsByCategory, getSiteSettings, formatPrice, getProductImageUrl } from "@/lib/products";
 
-export const revalidate = 60;
+export const revalidate = 3;
 
 export function generateStaticParams() {
   const categories = getAllCategories();
