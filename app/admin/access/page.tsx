@@ -25,7 +25,7 @@ interface Product {
   pricing: PriceTier[];
   description: string;
   image_url: string | null;
-  in_stock: boolean;
+  customizable?: boolean;
 }
 
 interface Category {
@@ -70,10 +70,24 @@ export default function AdminPage() {
     if (res.ok) setCategories(await res.json());
   }, [adminKey]);
 
-  function handleLogin(e: React.FormEvent) {
+  const [loginError, setLoginError] = useState("");
+
+  async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
-    setAdminKey(password);
-    setLoggedIn(true);
+    setLoginError("");
+    setLoading(true);
+    try {
+      const res = await fetch("/api/admin/categories", { headers: { "x-admin-key": password } });
+      if (res.ok) {
+        setAdminKey(password);
+        setLoggedIn(true);
+      } else {
+        setLoginError("Invalid password");
+      }
+    } catch {
+      setLoginError("Connection error");
+    }
+    setLoading(false);
   }
 
   useEffect(() => {
@@ -84,19 +98,22 @@ export default function AdminPage() {
 
   async function deleteInquiry(id: number) {
     if (!confirm("Delete this inquiry?")) return;
-    await fetch("/api/inquiries", { method: "DELETE", headers: headers(), body: JSON.stringify({ id }) });
+    const res = await fetch("/api/inquiries", { method: "DELETE", headers: headers(), body: JSON.stringify({ id }) });
+    if (!res.ok) alert("Failed to delete inquiry: " + (await res.json()).error);
     loadInquiries();
   }
 
   async function deleteProduct(id: string) {
     if (!confirm("Delete this product?")) return;
-    await fetch("/api/admin/products", { method: "DELETE", headers: headers(), body: JSON.stringify({ id }) });
+    const res = await fetch("/api/admin/products", { method: "DELETE", headers: headers(), body: JSON.stringify({ id }) });
+    if (!res.ok) alert("Failed to delete product: " + (await res.json()).error);
     loadProducts();
   }
 
   async function saveProduct(product: Partial<Product> & { id?: string }) {
     const method = product.id && products.find(p => p.id === product.id) ? "PUT" : "POST";
-    await fetch("/api/admin/products", { method, headers: headers(), body: JSON.stringify(product) });
+    const res = await fetch("/api/admin/products", { method, headers: headers(), body: JSON.stringify(product) });
+    if (!res.ok) { alert("Failed to save product: " + (await res.json()).error); return; }
     setEditProduct(null);
     setShowAddProduct(false);
     loadProducts();
@@ -105,7 +122,8 @@ export default function AdminPage() {
   async function saveCategory(cat: Partial<Category> & { id?: string }, isEdit: boolean) {
     const method = isEdit ? "PUT" : "POST";
     const body = isEdit ? cat : { name: cat.name, slug: cat.id, description: cat.description, premium: cat.premium };
-    await fetch("/api/admin/categories", { method, headers: headers(), body: JSON.stringify(body) });
+    const res = await fetch("/api/admin/categories", { method, headers: headers(), body: JSON.stringify(body) });
+    if (!res.ok) { alert("Failed to save category: " + (await res.json()).error); return; }
     setShowAddCategory(false);
     setEditCategory(null);
     loadCategories();
@@ -115,7 +133,8 @@ export default function AdminPage() {
     const count = products.filter(p => p.category === id).length;
     if (count > 0 && !confirm(`This category has ${count} products. Delete anyway?`)) return;
     if (count === 0 && !confirm("Delete this category?")) return;
-    await fetch("/api/admin/categories", { method: "DELETE", headers: headers(), body: JSON.stringify({ id }) });
+    const res = await fetch("/api/admin/categories", { method: "DELETE", headers: headers(), body: JSON.stringify({ id }) });
+    if (!res.ok) alert("Failed to delete category: " + (await res.json()).error);
     loadCategories();
   }
 
@@ -131,7 +150,8 @@ export default function AdminPage() {
             <p className="text-gray-500 text-sm mt-1">Party Paragon Dashboard</p>
           </div>
           <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter admin password" className="w-full px-4 py-3 border border-gray-300 rounded-xl mb-4 focus:ring-2 focus:ring-primary-500 outline-none" required />
-          <button type="submit" className="btn-primary w-full justify-center">Login</button>
+          {loginError && <p className="text-red-500 text-sm text-center mb-3">{loginError}</p>}
+          <button type="submit" disabled={loading} className="btn-primary w-full justify-center">{loading ? "Checking..." : "Login"}</button>
         </form>
       </div>
     );
@@ -357,7 +377,7 @@ function ProductForm({ product, categories, onSave, onCancel, adminKey }: {
       return { price: parseFloat(parts[0]), moq: parseInt(parts[1]) || 1, unit: parts[2] || "pcs" };
     });
     const id = product?.id || category.substring(0, 3) + "-" + Date.now().toString().slice(-6);
-    onSave({ id, name, category, sku, brand: brand || null, size: size || null, material: material || null, description, image_url: imageUrl || null, pricing, in_stock: true });
+    onSave({ id, name, category, sku, brand: brand || null, size: size || null, material: material || null, description, image_url: imageUrl || null, pricing });
   }
 
   const selectedCatName = categories.find(c => c.id === category)?.name || category;

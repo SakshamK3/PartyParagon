@@ -39,15 +39,49 @@ export interface SiteSettings {
   whatsapp: string;
 }
 
-// Categories stay static (rarely change)
-const categories = productsData.categories as Category[];
+// Categories: try Supabase Storage first, fall back to static JSON
+const staticCategories = productsData.categories as Category[];
+
+let cachedCategories: Category[] | null = null;
+let categoriesFetchedAt = 0;
+const CACHE_TTL = 60_000; // 1 minute
+
+async function fetchCategoriesFromStorage(): Promise<Category[]> {
+  try {
+    const { data } = await supabase.storage
+      .from("product-images")
+      .download("data/categories.json");
+
+    if (!data) return staticCategories;
+    const text = await data.text();
+    return JSON.parse(text);
+  } catch {
+    return staticCategories;
+  }
+}
 
 export function getAllCategories(): Category[] {
-  return categories;
+  // Synchronous — return cached or static (pages that need fresh data should use async version)
+  return cachedCategories || staticCategories;
+}
+
+export async function getAllCategoriesAsync(): Promise<Category[]> {
+  const now = Date.now();
+  if (cachedCategories && now - categoriesFetchedAt < CACHE_TTL) {
+    return cachedCategories;
+  }
+  cachedCategories = await fetchCategoriesFromStorage();
+  categoriesFetchedAt = now;
+  return cachedCategories;
 }
 
 export function getCategory(slug: string): Category | undefined {
-  return categories.find((c) => c.slug === slug);
+  return getAllCategories().find((c) => c.slug === slug);
+}
+
+export async function getCategoryAsync(slug: string): Promise<Category | undefined> {
+  const cats = await getAllCategoriesAsync();
+  return cats.find((c) => c.slug === slug);
 }
 
 // Products fetched from Supabase (dynamic prices + images)
